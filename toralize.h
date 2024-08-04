@@ -1,0 +1,52 @@
+/* toralize.h */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<unistd.h>
+#include<sys/socket.h>
+#include<arpa/inet.h>
+#include<netinet/in.h>
+
+#define PROXY         "127.0.0.1"
+#define PROXYPORT     9050
+
+typedef unsigned char int8;
+typedef unsigned short int int16;
+typedef unsigned int int32;
+
+/*
+* Network Packet
+* SOCKS Connect
+*		          +----+----+----+----+----+----+----+----+----+----+....+----+
+*		          | VN | CD | DSTPORT |      DSTIP        | USERID       |NULL|
+*          		+----+----+----+----+----+----+----+----+----+----+....+----+
+*            	   1    1      2              4           variable       1
+*/
+
+struct proxy_request {
+  int8 vn; // * version number
+  int8 cd;  // * connect code
+  int16 dstport; // * destination port
+  int32 destip; // * destination IP
+  unsigned char userid[8];
+};
+
+typedef struct proxy_request Req;
+
+/*
+* SOCKS Response
+*       		+----+----+----+----+----+----+----+----+
+*		        | VN | CD | DSTPORT |      DSTIP        |
+*		        +----+----+----+----+----+----+----+----+
+*             1    1      2              4
+*/
+
+struct proxy_response {
+  int8 vn; // * version number
+  int8 cd; // * connect code
+  int16 _;
+  int32 __;
+};
+
+typedef struct proxy_response Res;
